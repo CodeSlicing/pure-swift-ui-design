@@ -20,6 +20,10 @@ public extension Double {
         .radians(self)
     }
 
+    var cycles: Angle {
+        .cycles(self)
+    }
+    
     var degreesAsRadians: Angle {
         (self * degreesAsRadiansFactor).radians
     }

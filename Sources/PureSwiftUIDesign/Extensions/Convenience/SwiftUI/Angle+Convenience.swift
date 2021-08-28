@@ -65,12 +65,16 @@ public extension Angle {
     static let leading = 270.degrees
 }
 
-// MARK: ----- CYCLE FRACTION
+// MARK: ----- CYCLES (MULTIPLES OF ONE ROTATION)
 
 public extension Angle {
     
-    static func cycle(_ scale: Double) -> Angle {
-        (360.0 * scale).degrees
+    static func cycles(_ cycles: Double) -> Angle {
+        (360.0 * cycles).degrees
+    }
+    
+    var cycles: Double {
+        degrees / 360
     }
 }
 
