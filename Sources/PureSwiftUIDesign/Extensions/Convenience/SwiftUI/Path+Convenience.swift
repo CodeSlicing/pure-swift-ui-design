@@ -461,10 +461,10 @@ public extension Path {
     // with normalised angles
     
     mutating func arc(_ center: CGPoint, radius: CGFloat, startAngleFromTop: Angle, endAngleFromTop: Angle, clockwise: Bool = true, transform: CGAffineTransform = .identity) {
-        arc(center, radius: radius, startAngle: normaliseAngle(startAngleFromTop), endAngle: normaliseAngle(endAngleFromTop), clockwise: clockwise, transform: transform)
+        arc(center, radius: radius, startAngle: offsetAsAngleFromTop(startAngleFromTop), endAngle: normaliseAngle(endAngleFromTop), clockwise: clockwise, transform: transform)
     }
     
     mutating func arc(_ center: CGPoint, radius: CGFloat, startAngleFromTop: Angle, delta: Angle, transform: CGAffineTransform = .identity) {
-        addRelativeArc(center: center, radius: radius, startAngle: normaliseAngle(startAngleFromTop), delta: delta, transform: transform)
+        addRelativeArc(center: center, radius: radius, startAngle: offsetAsAngleFromTop(startAngleFromTop), delta: delta, transform: transform)
     }
 }

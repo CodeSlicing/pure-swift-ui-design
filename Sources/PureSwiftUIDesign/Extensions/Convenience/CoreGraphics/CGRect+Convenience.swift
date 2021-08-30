@@ -231,6 +231,7 @@ public extension CGRect {
 
 // MARK: ----- INSET
 
+#if !os(macOS)
 public extension CGRect {
     
     func inset(_ top: CGFloat, _ leading: CGFloat, _ bottom: CGFloat, _ trailing: CGFloat) -> CGRect {
@@ -269,6 +270,7 @@ public extension CGRect {
         inset(size, size, size, size)
     }
 }
+#endif
 
 // MARK: ----- REGION
 

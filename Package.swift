@@ -5,7 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "PureSwiftUIDesign",
-    platforms: [.iOS(SupportedPlatform.IOSVersion.v13)],
+    platforms: [
+        .iOS(.v13),
+        .watchOS(.v6),
+        .tvOS(.v13),
+        .macOS(.v10_15)
+    ],
     products: [
         .library(
             name: "PureSwiftUIDesign",
