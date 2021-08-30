@@ -7,6 +7,12 @@
 //
 import SwiftUI
 
+private let offsetFromTopAngle = 90.degrees
+
+public func offsetAsAngleFromTop(_ angle: Angle) -> Angle {
+    angle - offsetFromTopAngle
+}
+
 public extension Angle {
     
     static func *(lhs: Angle, rhs: Double) -> Angle {
@@ -34,6 +40,15 @@ public extension Angle {
     }
 }
 
+// MARK: ----- PROPERTIES
+
+public extension Angle {
+
+    var fromTop: Angle {
+        offsetAsAngleFromTop(self)
+    }
+}
+
 // MARK: ----- TRIGONOMETRY
 
 public extension Angle {
@@ -55,14 +70,14 @@ public extension Angle {
 
 public extension Angle {
     
-    static let topLeading = 315.degrees
-    static let top = 0.degrees
-    static let topTrailing = 45.degrees
-    static let trailing = 90.degrees
-    static let bottomTrailing = 135.degrees
-    static let bottom = 180.degrees
-    static let bottomLeading = 225.degrees
-    static let leading = 270.degrees
+    static let topLeading = -135.degrees
+    static let top = -90.degrees
+    static let topTrailing = -45.degrees
+    static let trailing = 0.degrees
+    static let bottomTrailing = 45.degrees
+    static let bottom = 90.degrees
+    static let bottomLeading = 135.degrees
+    static let leading = 180.degrees
 }
 
 // MARK: ----- CYCLES (MULTIPLES OF ONE ROTATION)

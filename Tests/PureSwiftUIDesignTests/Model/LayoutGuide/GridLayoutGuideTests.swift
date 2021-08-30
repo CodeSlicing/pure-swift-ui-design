@@ -57,13 +57,13 @@ extension GridLayoutGuideTests {
     func testAngleForPoint() {
         let grid = LayoutGuide.grid(rect, columns: 10, rows: 6)
         
-        XCTAssertEqual(grid.angleTo(10, 0), 90.degrees)
-        XCTAssertEqual(grid.angleTo(0, 10), 180.degrees)
+        XCTAssertEqual(grid.angleTo(10, 0), 90.degrees.fromTop)
+        XCTAssertEqual(grid.angleTo(0, 10), 180.degrees.fromTop)
         
-        XCTAssertEqual(grid.angleTo(0, 3, from: rect.center), 270.degrees)
-        XCTAssertEqual(grid.angleTo(5, 0, from: rect.center), 0.degrees)
-        XCTAssertEqual(grid.angleTo(10, 3, from: rect.center), 90.degrees)
-        XCTAssertEqual(grid.angleTo(5, 6, from: rect.center), 180.degrees)
+        XCTAssertEqual(grid.angleTo(0, 3, from: rect.center), 270.degrees.fromTop)
+        XCTAssertEqual(grid.angleTo(5, 0, from: rect.center), 0.degrees.fromTop)
+        XCTAssertEqual(grid.angleTo(10, 3, from: rect.center), 90.degrees.fromTop)
+        XCTAssertEqual(grid.angleTo(5, 6, from: rect.center), 180.degrees.fromTop)
     }
 }
 

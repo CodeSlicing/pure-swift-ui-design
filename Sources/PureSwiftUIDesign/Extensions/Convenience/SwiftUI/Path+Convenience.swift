@@ -22,7 +22,8 @@ public func adjustAngle(_ angle: Angle) -> Angle {
     normaliseAngle(angle)
 }
 
-// TODO: add documentation for normaliseAngle
+
+@available(*, deprecated, renamed: "offsetAsAngleFromTop")
 public func normaliseAngle(_ angle: Angle) -> Angle {
     angle - rotationNormalisationAngle
 }
@@ -446,14 +447,24 @@ public extension Path {
 public extension Path {
     
     mutating func arc(_ center: CGPoint, radius: CGFloat, startAngle: Angle, endAngle: Angle, clockwise: Bool = true, transform: CGAffineTransform = .identity) {
-        addArc(center: center, radius: radius, startAngle: normaliseAngle(startAngle), endAngle: normaliseAngle(endAngle), clockwise: !clockwise, transform: transform)
+        addArc(center: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: !clockwise, transform: transform)
     }
     
     mutating func arc(_ center: CGPoint, radius: CGFloat, startAngle: Angle, delta: Angle, transform: CGAffineTransform = .identity) {
-        addRelativeArc(center: center, radius: radius, startAngle: normaliseAngle(startAngle), delta: delta, transform: transform)
+        addRelativeArc(center: center, radius: radius, startAngle: startAngle, delta: delta, transform: transform)
     }
     
     mutating func arc(_ tangent1End: CGPoint, _ tangent2End: CGPoint, radius: CGFloat, transform: CGAffineTransform = .identity) {
         addArc(tangent1End: tangent1End, tangent2End: tangent2End, radius: radius, transform: transform)
+    }
+
+    // with normalised angles
+    
+    mutating func arc(_ center: CGPoint, radius: CGFloat, startAngleFromTop: Angle, endAngleFromTop: Angle, clockwise: Bool = true, transform: CGAffineTransform = .identity) {
+        arc(center, radius: radius, startAngle: normaliseAngle(startAngleFromTop), endAngle: normaliseAngle(endAngleFromTop), clockwise: clockwise, transform: transform)
+    }
+    
+    mutating func arc(_ center: CGPoint, radius: CGFloat, startAngleFromTop: Angle, delta: Angle, transform: CGAffineTransform = .identity) {
+        addRelativeArc(center: center, radius: radius, startAngle: normaliseAngle(startAngleFromTop), delta: delta, transform: transform)
     }
 }

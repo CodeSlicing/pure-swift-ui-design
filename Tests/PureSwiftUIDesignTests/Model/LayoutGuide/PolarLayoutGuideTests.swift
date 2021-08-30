@@ -55,14 +55,28 @@ extension PolarLayoutGuideTests {
 extension PolarLayoutGuideTests {
     
     func testAngleForPoint() {
-        let polar = LayoutGuide.polar(rect, rings: 2, segments: 8)
+        let squareRect = CGRect(10, 10)
+        let polar = LayoutGuide.polar(squareRect, rings: 2, segments: 8)
+
+        XCTAssertEqual(polar.angleTo(2, 2), .trailing)
+        XCTAssertEqual(polar.angleTo(1, 4), .bottom)
         
-        XCTAssertEqual(polar.angleTo(2, 2), 90.degrees)
-        XCTAssertEqual(polar.angleTo(1, 4), 180.degrees)
+        XCTAssertEqual(polar.angleTo(2, 2, from: squareRect.leading), 0.degrees)
+        XCTAssertEqual(polar.angleTo(0, 0, from: squareRect.bottom), 0.degrees.fromTop)
+        XCTAssertEqual(polar.angleTo(2, 6, from: squareRect.center), 270.degrees.fromTop)
+    }
+    
+    func testAngleForPointWithNativeAngles() {
+        let squareRect = CGRect(10, 10)
+        let polar = LayoutGuide.polar(squareRect, rings: 2, segments: 8, fromTop: false)
+
+        XCTAssertEqual(polar.angleTo(2, 2), .bottom)
+        XCTAssertEqual(polar.angleTo(2, 3), .bottomLeading)
+        XCTAssertEqual(polar.angleTo(1, 4), .leading)
         
-        XCTAssertEqual(polar.angleTo(2, 2, from: rect.leading), 90.degrees)
-        XCTAssertEqual(polar.angleTo(0, 0, from: rect.bottom), 0.degrees)
-        XCTAssertEqual(polar.angleTo(2, 6, from: rect.center), 270.degrees)
+        XCTAssertEqual(polar.angleTo(2, 2, from: squareRect.leading), 45.degrees)
+        XCTAssertEqual(polar.angleTo(0, 0, from: squareRect.bottom).sin, -90.degrees.sin)
+        XCTAssertEqual(polar.angleTo(2, 6, from: squareRect.center).degrees, -90.degrees.degrees, accuracy: 0.0001)
     }
 }
 
@@ -232,7 +246,7 @@ extension PolarLayoutGuideTests {
     func testPointsForRelativeIsEquivalentToAbsolute() {
         let rings: [CGFloat] = [0, 0.5, 1]
         let polarRelative = LayoutGuide.polar(rect, rings: rings, segments: [0, 0.25, 0.5])
-        let polarAbsolute = LayoutGuide.polar(rect, rings: rings, segments: [.cycle(0), .cycle(0.25), .cycle(0.5)])
+        let polarAbsolute = LayoutGuide.polar(rect, rings: rings, segments: [.cycles(0), .cycles(0.25), .cycles(0.5)])
         let polarAbsoluteDegrees = LayoutGuide.polar(rect, rings: rings, segments: [0.degrees, 90.degrees, 180.degrees])
         for ring in 0..<rings.count {
             for segment in 0..<3 {
@@ -329,7 +343,7 @@ extension PolarLayoutGuideTests {
     func testPointsForEquidistantRingRelativeIsEquivalentToAbsolute() {
         let rings = 5
         let polarRelative = LayoutGuide.polar(rect, rings: rings, segments: [0, 0.25, 0.5])
-        let polarAbsolute = LayoutGuide.polar(rect, rings: rings, segments: [.cycle(0), .cycle(0.25), .cycle(0.5)])
+        let polarAbsolute = LayoutGuide.polar(rect, rings: rings, segments: [.cycles(0), .cycles(0.25), .cycles(0.5)])
         let polarAbsoluteDegrees = LayoutGuide.polar(rect, rings: rings, segments: [0.degrees, 90.degrees, 180.degrees])
         for ring in 0..<rings {
             for segment in 0..<3 {

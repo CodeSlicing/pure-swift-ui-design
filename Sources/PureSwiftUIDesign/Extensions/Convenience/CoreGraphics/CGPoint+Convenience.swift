@@ -396,7 +396,7 @@ public extension CGPoint {
     func angleTo(_ point: CGPoint) -> Angle {
         let delta = point - self
         let angle = atan2(delta.y, delta.x).radians
-        return angle + 90.degrees
+        return angle
     }
     
     func angleTo(_ x: CGFloat, _ y: CGFloat) -> Angle {

@@ -36,14 +36,14 @@ class AngleConvenienceExtensionsTests: XCTestCase {
 extension AngleConvenienceExtensionsTests {
 
     func testStaticConstants() {
-        XCTAssertEqual(Angle.topLeading, 315.degrees)
-        XCTAssertEqual(Angle.top, 0.degrees)
-        XCTAssertEqual(Angle.topTrailing, 45.degrees)
-        XCTAssertEqual(Angle.trailing, 90.degrees)
-        XCTAssertEqual(Angle.bottomTrailing, 135.degrees)
-        XCTAssertEqual(Angle.bottom, 180.degrees)
-        XCTAssertEqual(Angle.bottomLeading, 225.degrees)
-        XCTAssertEqual(Angle.leading, 270.degrees)
+        XCTAssertEqual(Angle.topLeading, -135.degrees)
+        XCTAssertEqual(Angle.top, -90.degrees)
+        XCTAssertEqual(Angle.topTrailing, -45.degrees)
+        XCTAssertEqual(Angle.trailing, 0.degrees)
+        XCTAssertEqual(Angle.bottomTrailing, 45.degrees)
+        XCTAssertEqual(Angle.bottom, 90.degrees)
+        XCTAssertEqual(Angle.bottomLeading, 135.degrees)
+        XCTAssertEqual(Angle.leading, 180.degrees)
     }
 }
 

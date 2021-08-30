@@ -11,36 +11,38 @@ private struct PolarLayoutCoordinator: LayoutCoordinator {
     let baseRect: CGRect
     private let radiusCalculator: RadiusForRingCalculator
     private let angleCalculator: AngleForSegmentCalculator
+    private let fromTop: Bool
     
-    init(origin: CGPoint, rect: CGRect, radiusCalculator: RadiusForRingCalculator, angleCalculator: AngleForSegmentCalculator) {
+    init(origin: CGPoint, rect: CGRect, radiusCalculator: RadiusForRingCalculator, angleCalculator: AngleForSegmentCalculator, fromTop: Bool = true) {
         self.baseOrigin = origin
         self.baseRect = rect
         self.radiusCalculator = radiusCalculator
         self.angleCalculator = angleCalculator
+        self.fromTop = fromTop
     }
     
     subscript(ringIndex: Int, segmentIndex: Int) -> CGPoint {
         baseOrigin.offset(
             radius: radiusCalculator.radiusFor(ringIndex: ringIndex),
-            angle: angleCalculator.angleFor(segmentIndex: segmentIndex))
+            angle: angleCalculator.angleFor(segmentIndex: segmentIndex).fromTopIf(fromTop))
     }
 
     subscript(rel relativeRadius: CGFloat, segmentIndex: Int) -> CGPoint {
         baseOrigin.offset(
             radius: radiusCalculator.radiusFor(relativeRadius: relativeRadius),
-            angle: angleCalculator.angleFor(segmentIndex: segmentIndex))
+            angle: angleCalculator.angleFor(segmentIndex: segmentIndex).fromTopIf(fromTop))
     }
 
     subscript(ringIndex: Int, rel relativeAngle: CGFloat) -> CGPoint {
         baseOrigin.offset(
             radius: radiusCalculator.radiusFor(ringIndex: ringIndex),
-            angle: angleCalculator.angleFor(relativeAngle: relativeAngle))
+            angle: angleCalculator.angleFor(relativeAngle: relativeAngle).fromTopIf(fromTop))
     }
 
     subscript(rel relativeRadius: CGFloat, rel relativeAngle: CGFloat) -> CGPoint {
         baseOrigin.offset(
             radius: radiusCalculator.radiusFor(relativeRadius: relativeRadius),
-            angle: angleCalculator.angleFor(relativeAngle: relativeAngle))
+            angle: angleCalculator.angleFor(relativeAngle: relativeAngle).fromTopIf(fromTop))
     }
     
     var xCount: Int {
@@ -70,6 +72,13 @@ private struct PolarLayoutCoordinator: LayoutCoordinator {
             let virtualRectOrigin = baseOrigin - baseRect.sizeScaled(0.5).asCGPoint
             return virtualRectOrigin.moveOrigin(in: baseRect.size, origin: anchor)
         }
+    }
+}
+
+private extension Angle {
+
+    func fromTopIf(_ condition: Bool) -> Angle {
+        return condition ? offsetAsAngleFromTop(self) : self
     }
 }
 
@@ -278,7 +287,7 @@ private struct AbsoluteAngleForSegmentCalculator: AngleForSegmentCalculator {
 
 public extension LayoutGuide {
     
-    private static func polarLayout(radiusCalculator: RadiusForRingCalculator, angleCalculator: AngleForSegmentCalculator, rect: CGRect, origin: UnitPoint, useMaxDimension: Bool) -> LayoutGuide {
+    private static func polarLayout(radiusCalculator: RadiusForRingCalculator, angleCalculator: AngleForSegmentCalculator, rect: CGRect, origin: UnitPoint, useMaxDimension: Bool, fromTop: Bool = true) -> LayoutGuide {
        
         let origin = calcOrigin(in: rect, origin: origin)
         let size: CGSize = .square(useMaxDimension ? rect.maxDimension : rect.minDimension)
@@ -286,7 +295,7 @@ public extension LayoutGuide {
             origin: origin,
             rect: CGRect(origin.offset(in: size, anchor: .center), size),
             radiusCalculator: radiusCalculator,
-            angleCalculator: angleCalculator)
+            angleCalculator: angleCalculator, fromTop: fromTop)
         
         return LayoutGuide(coordinator, rect: rect)
     }
@@ -294,59 +303,59 @@ public extension LayoutGuide {
     /**
      Equidistant rings and segments
      */
-    static func polar(_ rect: CGRect, rings: Int, segments: Int, useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuide {
+    static func polar(_ rect: CGRect, rings: Int, segments: Int, useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuide {
         
         let radiusCalculator = EquidistantRadiusForRingCalculator(rect, rings: rings, useMaxDimension: useMaxDimension)
         let angleCalculator = EquidistantAngleForSegmentCalculator(segments: segments)
         
-        return polarLayout(radiusCalculator: radiusCalculator, angleCalculator: angleCalculator, rect: rect, origin: origin, useMaxDimension: useMaxDimension)
+        return polarLayout(radiusCalculator: radiusCalculator, angleCalculator: angleCalculator, rect: rect, origin: origin, useMaxDimension: useMaxDimension, fromTop: fromTop)
     }
     
     /**
      Specified relative rings and equidistant segments
      */
-    static func polar(_ rect: CGRect, rings: [CGFloat], segments: Int, useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuide {
+    static func polar(_ rect: CGRect, rings: [CGFloat], segments: Int, useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuide {
 
         let radiusCalculator = RelativeRadiusForRingCalculator(rect, rings: rings, useMaxDimension: useMaxDimension)
         let angleCalculator = EquidistantAngleForSegmentCalculator(segments: segments)
         
-        return polarLayout(radiusCalculator: radiusCalculator, angleCalculator: angleCalculator, rect: rect, origin: origin, useMaxDimension: useMaxDimension)
+        return polarLayout(radiusCalculator: radiusCalculator, angleCalculator: angleCalculator, rect: rect, origin: origin, useMaxDimension: useMaxDimension, fromTop: fromTop)
     }
     
     /**
      Equidistant rings and relative segments
      */
-    static func polar(_ rect: CGRect, rings: Int, segments: [CGFloat], useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuide {
-        polar(rect, rings: rings, segments: segments.map { .cycles($0.asDouble) }, useMaxDimension: useMaxDimension, origin: origin)
+    static func polar(_ rect: CGRect, rings: Int, segments: [CGFloat], useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuide {
+        polar(rect, rings: rings, segments: segments.map { .cycles($0.asDouble) }, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
     }
     
     /**
      Equidistant rings and absolute segments
      */
-    static func polar(_ rect: CGRect, rings: Int, segments: [Angle], useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuide {
+    static func polar(_ rect: CGRect, rings: Int, segments: [Angle], useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuide {
 
         let radiusCalculator = EquidistantRadiusForRingCalculator(rect, rings: rings, useMaxDimension: useMaxDimension)
         let angleCalculator = AbsoluteAngleForSegmentCalculator(segments: segments)
 
-        return polarLayout(radiusCalculator: radiusCalculator, angleCalculator: angleCalculator, rect: rect, origin: origin, useMaxDimension: useMaxDimension)
+        return polarLayout(radiusCalculator: radiusCalculator, angleCalculator: angleCalculator, rect: rect, origin: origin, useMaxDimension: useMaxDimension, fromTop: fromTop)
     }
     
     /**
      Relative rings and relative segments
      */
-    static func polar(_ rect: CGRect, rings: [CGFloat], segments: [CGFloat], useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuide {
-        polar(rect, rings: rings, segments: segments.map { .cycles($0.asDouble) }, useMaxDimension: useMaxDimension, origin: origin)
+    static func polar(_ rect: CGRect, rings: [CGFloat], segments: [CGFloat], useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuide {
+        polar(rect, rings: rings, segments: segments.map { .cycles($0.asDouble) }, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
     }
 
     /**
      Relative rings and relative segments
      */
-    static func polar(_ rect: CGRect, rings: [CGFloat], segments: [Angle], useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuide {
+    static func polar(_ rect: CGRect, rings: [CGFloat], segments: [Angle], useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuide {
     
         let radiusCalculator = RelativeRadiusForRingCalculator(rect, rings: rings, useMaxDimension: useMaxDimension)
         let angleCalculator = AbsoluteAngleForSegmentCalculator(segments: segments)
 
-        return polarLayout(radiusCalculator: radiusCalculator, angleCalculator: angleCalculator, rect: rect, origin: origin, useMaxDimension: useMaxDimension)
+        return polarLayout(radiusCalculator: radiusCalculator, angleCalculator: angleCalculator, rect: rect, origin: origin, useMaxDimension: useMaxDimension, fromTop: fromTop)
     }
 }
 

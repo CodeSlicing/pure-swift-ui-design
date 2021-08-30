@@ -42,10 +42,18 @@ extension CGPointConvenienceExtensionsTests {
     }
     
     func testStaticInitWithOffsetAndAngle() {
-        assertEqual(CGPoint.point(x, 90.degrees), CGPoint(x, 0))
-        assertEqual(CGPoint.point(x, 180.degrees), CGPoint(0, x))
-        assertEqual(CGPoint.point(x, 270.degrees), CGPoint(-x, 0))
-        assertEqual(CGPoint.point(x, 360.degrees), CGPoint(0, -x))
+        assertEqual(CGPoint.point(x, 90.degrees), CGPoint(0, x))
+        assertEqual(CGPoint.point(x, 180.degrees), CGPoint(-x, 0))
+        assertEqual(CGPoint.point(x, 270.degrees), CGPoint(0, -x))
+        assertEqual(CGPoint.point(x, 360.degrees), CGPoint(x, 0))
+    }
+
+    
+    func testStaticInitWithOffsetAndAngleFromTop() {
+        assertEqual(CGPoint.point(x, 90.degrees.fromTop), CGPoint(x, 0))
+        assertEqual(CGPoint.point(x, 180.degrees.fromTop), CGPoint(0, x))
+        assertEqual(CGPoint.point(x, 270.degrees.fromTop), CGPoint(-x, 0))
+        assertEqual(CGPoint.point(x, 360.degrees.fromTop), CGPoint(0, -x))
     }
 }
 
@@ -289,14 +297,20 @@ extension CGPointConvenienceExtensionsTests {
         let offsetPoint1 = testPoint.offset(1, -1)
         let offsetPoint2 = testPoint.offset(-1, 1)
         let offsetPoint3 = testPoint.offset(0, 2)
+        let offsetPoint4 = testPoint.offset(-1, 0)
+        let offsetPoint5 = testPoint.offset(-1, -1)
 
         XCTAssertEqual(testPoint.angleTo(offsetPoint1), .topTrailing)
         XCTAssertEqual(testPoint.angleTo(offsetPoint2), .bottomLeading)
         XCTAssertEqual(testPoint.angleTo(offsetPoint3), .bottom)
-        
+        XCTAssertEqual(testPoint.angleTo(offsetPoint4), .leading)
+        XCTAssertEqual(testPoint.angleTo(offsetPoint5), .topLeading)
+
         XCTAssertEqual(testPoint.angleTo(offsetPoint1.x, offsetPoint1.y), .topTrailing)
         XCTAssertEqual(testPoint.angleTo(offsetPoint2.x, offsetPoint2.y), .bottomLeading)
         XCTAssertEqual(testPoint.angleTo(offsetPoint3.x, offsetPoint3.y), .bottom)
+        XCTAssertEqual(testPoint.angleTo(offsetPoint5.x, offsetPoint4.y), .leading)
+        XCTAssertEqual(testPoint.angleTo(offsetPoint5.x, offsetPoint5.y), .topLeading)
     }
 }
 
