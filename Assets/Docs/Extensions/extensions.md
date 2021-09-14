@@ -13,23 +13,31 @@ Natively, working with paths is a time-consuming task that cannot be referred to
 
 ## Type Extensions
 
-There are several aspects to making this a reality and it starts with extensions on the fundamental types used heavily in path creation, namely `Path`, `CGRect`, `CGSize`, `CGPoint`, `CGVector`, and `Angle`. A lot of time has been spent bringing these types into a sort of *synergy* with a consistent design language that flows naturally between types to the point where you don't have to *know* all the available extensions, but can reasonably guess how they hang together.
+There are several aspects that go into making this a reality and it starts with extensions on the fundamental types used heavily in path creation, namely `Path`, `CGRect`, `CGSize`, `CGPoint`, `CGVector`, and `Angle`. A lot of time has been spent bringing these types into a sort of *synergy* with a consistent design language that flows naturally between types to the point where you don't have to *know* all the available extensions, but can reasonably guess how they hang together.
 
-It has been the goal to remove as much calculation code as possible from the design of the `Path` itself, much in the same way that this framework cleans up views. The result is a more declarative approach to creating paths where little to no explicit calculation needs to be written to create anything from simple rectangles all the way up to elaborate designs that would previously have resulted in fairly impenetrable code.
+It has been the goal to remove as much calculation code as possible from the design of the `Path` itself and the result is a more declarative approach to creating paths where little to no explicit calculation needs to be written to create anything from simple rectangles all the way up to elaborate designs that would have previously resulted in fairly impenetrable code.
 
 Allow me to headline a few of the most useful extensions to give you an idea of how they fit together:
 
 ### Angle
 
-Taking a cue from the `UnitPoint` struct, `Angle` now has constants represented by `.top`, `.leading`, `.bottomTrailing` etc pointing in the directions you would expect. It's important to note that throughout [PureSwiftUI][pure-swift-ui] an angle of *zero* points straight up. Positive angles are *clockwise* and negative angles are *anti-clockwise*. This is a subtle change from the standard in `CoreGraphics` where zero degrees points to the right. Clockwise also *means clockwise!* Always. So you don't have to do any weird visualizations in your head. Even though this is a break from the standard `CoreGraphics` library, I believe the increase in clarity more than justifies this break from absolute consistency.
+Taking a cue from the `UnitPoint` struct, `Angle` now has constants represented by `.top`, `.leading`, `.bottomTrailing` etc pointing in the directions you would expect. It's important to note that throughout [PureSwiftUI][pure-swift-ui] clockwise means *clockwise* so you don't have to do any weird visualizations in your head. Even though this is a break from the standard `CoreGraphics` library, I believe the increase in clarity more than justifies this break from absolute consistency.
 
-In addition to the directional constants, you can now specify a fraction of a rotation by using the `.cycle(scale)` function which takes any of the major UI types and returns an `Angle` representing the multiple of a single rotation. As well as constants, you can also create angles fluently by just typing using the `.degrees` property available on all major types. This small changes makes a huge difference to readability and can of course be used anywhere in Swift.
+In addition to the directional constants, you can now specify a fraction of a rotation by using the `.cycle(fraction)` function which returns an `Angle` representing the multiple of a single rotation: 
 
 ```swift
-let angleTop: Angle = .top // 0 degrees
-let angleTop: Angle = .bottomLeading // 225 degrees
-let angleCustom: Angle = .cycle(0.75) // 270 degrees
-let angleBottomRight = 135.degrees
+let threeQuarterRotation: Angle = .cycles(0.75)
+```
+
+As well as constants, you can also create angles fluently by just typing using the `.degrees` property available on all major types. This small changes makes a huge difference to readability and can of course be used anywhere in Swift.
+
+```swift
+let angleTop: Angle = .top // -90 degrees
+let angleTop: Angle = .bottomLeading // 135 degrees
+let angleCustom: Angle = .cycles(0.75) // 270 degrees
+let quarterRotation = 90.degrees
+let halfRotation = 0.5.cycles // 180 degrees
+let twoRotations = 2.cycles // 720 degrees
 ```
 
 With these at your disposal, it becomes quite natural to refer to angles in this way. Once you have an `Angle` you can call trigonometric functions directly on it, like so:
@@ -51,7 +59,7 @@ To see this at work, let's say you wanted to create a `CGRect` struct that occup
 let newRect = CGRect(origin: CGPoint(x: rect.midX, y: rect.midY), size: CGSize(width: rect.width * 0.5, height: rect.height * 0.5))
 path.addRect(newRect)
 
-// PureSwiftUI
+// PureSwiftUIDesign
 path.rect(rect.scaled(0.5, at: rect.center))
 ```
 
@@ -71,14 +79,16 @@ In doing this you quickly realise that the intent of the code is more and more o
 
 ```swift
 // native SwiftUI
-let newRect = CGRect(origin: CGPoint(x: rect.minX + rect.width * 0.25, y: rect.minY + rect.height * 0.25), size: CGSize(width: rect.width * 0.5, height: rect.height * 0.5))
+let newRect = CGRect(
+  origin: CGPoint(x: rect.minX + rect.width * 0.25, y: rect.minY + rect.height * 0.25), 
+  size: CGSize(width: rect.width * 0.5, height: rect.height * 0.5))
 path.addRect(newRect)
 
-// PureSwiftUI
+// PureSwiftUIDesign
 path.rect(rect.scaled(0.5, at: rect.center), anchor: .center)
 ```
 
-In [PureSwiftUI][pure-swift-ui] you just say *what* you want, not *how* to do it.
+In [PureSwiftUIDesign][pure-swift-ui-design] you just say *what* you want to do, not *how* to do it.
 
 I'd like to give one more example to really drive this point home, and to do that we're going to create this: 
 
@@ -102,39 +112,63 @@ let bottomRight = CGPoint(x: rect.maxX, y: rect.maxY)
 let offsetForBottomRight = CGPoint(x: bottomRight.x - size.width, y: bottomRight.y - size.height)
 path.addRect(CGRect(origin: offsetForBottomRight, size: size))
 
-// with PureSwiftUI
+// with PureSwiftUIDesign
 let size = rect.sizeScaled(0.25)
 path.rect(rect.origin, size)
 path.rect(rect.center, size, anchor: .center)
 path.rect(rect.bottomTrailing, size, anchor: .bottomTrailing)
 ```
 
-Even is this relatively simple example, it's easy to get lost in the native SwiftUI code. In comparison I don't think it's overstating the point to say that the [PureSwiftUI][pure-swift-ui] version is practically WYSIWYG! The great news is that building paths is like joining *Lego* bricks. As each `CGRect` struct is essentially its own coordinate system, they can be used to not only construct paths, but also to navigate the canvas.
+Even is this relatively simple example, it's easy to get lost in the native SwiftUI code. In comparison I don't think it's overstating the point to say that the [PureSwiftUIDesign][pure-swift-ui-design] version is practically WYSIWYG!In addition, as each `CGRect` struct is essentially its own coordinate system, they can be used to not only construct paths, but also to navigate the canvas.
 
-Combining this capability to the power of [layout guides][docs-layout-guides] opens the door to the true power of the [PureSwiftUI][pure-swift-ui] path construction framework.
+Combining this capability to the power of [layout guides][docs-layout-guides] opens the door to the true power of the [PureSwiftUIDesign][pure-swift-ui-design] path construction framework.
 
-A couple of other extensions worth mentioning are the `xScaled` and `yScaled` functions because they might not be obvious on first glance. These return the x or y position scaled along the width or height of the `CGRect` in question. So the center of the bottom-right rectangle would be described like so:
+#### Extracting points from CGRect
+
+As I mentioned, in [PureSwiftUIDesign][pure-swift-ui-design] `CGRect` has all the appropriate semantic constants associated with it. So you can obtain the top leading, center, and center of the trailing edge like this:
 
 ```swift
-CGPoint(rect.xScaled(0.75), rect.yScaled(0.75))
+let topLeading = rect.topLeading
+let center = rect.center
+let trailing = rect.trailing
 ```
 
-The reason I mention them is that they take the rectangle's origin into account, so they're *not* equivalent to the `widthScaled` and `heightScaled` functions.
-
-You can also inset rectangles in a variety of ways and they behave just like the native insets and padding in SwiftUI:
+The are a couple of additional ways of extracting points from `CGRect`, the simplest and most powerful of whichway is to use the subscript on `CGRect` that takes two `CGFloat` arguments:
 
 ```swift
-rect.insetTop(5)
-rect.inset([.top, .trailing], rect.halfWidth)
+let topLeading = rect[0, 0]
+let center = rect[0.5, 0.5]
+let trailing = rect[1, 0.5]
+```
+which is how you can treat each rectangle as its own coordinate system. 
+
+You can also obtain x and y separately by using the `relativeX` and `relativeY` which also take the origin of the rectangle into account. These return the x or y position scaled along the width or height of the `CGRect` in question. So the same constants could be obtained like this:
+
+```swift
+let topLeading = CGPoint(rect.relativeX(0), rect.relativeY(0))
+let center = CGPoint(rect.relativeX(0.5), rect.relativeY(0.5))
+let trailing = CGPoint(rect.relativeX(1), rect.relativeY(0.5))
+```
+
+As you can see, there are many ways of interacting with the canvas of a rectangle reducing the need for in-place relative point calculations.
+
+#### Insetting
+
+`CGRect` structures can be inset in a variety of ways and they behave just like the native insets and padding in SwiftUI:
+
+```swift
+// inset entire rectangle by 10 points
+let rect1 = rect.inset(10)
 
 // inset horizontally
-rect.hInset(10)
+let rect2 = rect.hInset(10)
 
 // inset vertically
-rect.vInset(10)
+let rect3 = rect.vInset(10)
 
-// inset rectangle by 10 points
-rect.inset(10)
+// specific insets
+let rect4 = rect.insetTop(5)
+let rect5 = rect.inset([.top, .trailing], rect.halfWidth)
 ```
 
 ### CGPoint
@@ -224,8 +258,8 @@ line(offset: CGPoint(100, 50))
 which will use the current point for the path to extrapolate the destination. If you want to restrict movement in an axis, you can use the horizontal or vertical versions of these methods:
 
 ```swift
-hMove(rect.center) // same as: hMove(rect.center.x)
-vLine(rect.top) // same as: vLine(rect.top.y)
+hMove(rect.center) // same result as: hMove(rect.center.x)
+vLine(rect.top) // same result as: vLine(rect.top.y)
 ```
 
 The `at` argument label can be used to draw lines at a specific location with a specific vector, or length and angle which can then be offset by an appropriate anchor point.
@@ -236,6 +270,10 @@ line(at: rect.center, length: 100, angle: 30.degrees, anchor: .center)
 // a line along the left side of the canvas
 vLine(at: rect.leading, length: rect.height, anchor: .center)
 ```
+#### Shapes and Multiple Lines
+
+There is also the capability to not only draw multiple lines at once, but also to add corner radii to where the points of the lines intersect. 
+
 
 That covers the majority of the API, but I encourage you to check out the source if you want to know more.
 
@@ -244,11 +282,12 @@ That covers the majority of the API, but I encourage you to check out the source
 --->
 
 [pure-swift-ui]: https://github.com/CodeSlicing/pure-swift-ui
-[CGSize]: https://github.com/CodeSlicing/pure-swift-ui/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGSize%2BConvenience.swift
-[CGPoint]: https://github.com/CodeSlicing/pure-swift-ui/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGPoint%2BConvenience.swift
-[CGRect]: https://github.com/CodeSlicing/pure-swift-ui/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGRect%2BConvenience.swift 
-[CGVector]: https://github.com/CodeSlicing/pure-swift-ui/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGVector%2BConvenience.swift 
-[Path]: https://github.com/CodeSlicing/pure-swift-ui/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/SwiftUI/Path%2BConvenience.swift
+[pure-swift-ui-design]: https://github.com/CodeSlicing/pure-swift-ui-design
+[CGSize]: https://github.com/CodeSlicing/pure-swift-ui-design/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGSize%2BConvenience.swift
+[CGPoint]: https://github.com/CodeSlicing/pure-swift-ui-design/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGPoint%2BConvenience.swift
+[CGRect]: https://github.com/CodeSlicing/pure-swift-ui-design/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGRect%2BConvenience.swift 
+[CGVector]: https://github.com/CodeSlicing/pure-swift-ui-design/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGVector%2BConvenience.swift 
+[Path]: https://github.com/CodeSlicing/pure-swift-ui-design/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/SwiftUI/Path%2BConvenience.swift
 
 <!---
 gists:

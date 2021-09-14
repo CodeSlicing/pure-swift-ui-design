@@ -1,6 +1,8 @@
+
+
 # Layout Guides
 
-Ok, brace yourselves because things are about to get a whole lot more awesome.
+Ok, brace yourselves because things are about to get a whole lot of awesome.
 
   - [What is a Layout Guide?](#what-is-a-layout-guide)
   - [Drawing Polygons](#drawing-polygons)
@@ -10,6 +12,27 @@ Ok, brace yourselves because things are about to get a whole lot more awesome.
   - [Layout Guide Properties](#layout-guide-properties)
   - [Practical Examples](#practical-examples)
   - [Putting it all Together](#putting-it-all-together)
+
+I've made some videos on layout guides which might be a good place to start if you'd prefer - playlist for [PureSwiftUIDesign][pure-swift-ui-design] can be found [here][layout-guides-playlist]: 
+
+<p align="center" style="padding-top:10px; padding-bottom:10px">
+<style>
+    .thumbnail {
+        width: 150px;
+        padding: 5px;
+    }
+</style>
+<a href="https://youtu.be/SY5fyaU3YlY" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-01_thumbnail.png" 
+alt="Grid Layout Guides" class="thumbnail"/></a>
+<a href="https://youtu.be/5gqjr0d62cU" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-02_thumbnail.png" 
+alt="Polar Layout Guides" class="thumbnail"/></a>
+z<a href="https://youtu.be/PI-2vyBfpoQ" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-05_thumbnail.png" 
+alt="Polar Layout Guides" class="thumbnail"/></a>
+<a href="https://youtu.be/LlNw2AXV0BU" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-06_thumbnail.png" 
+alt="Polar Layout Guides" class="thumbnail"/></a>
+<a href="https://youtu.be/db7oe5AZEfA" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-07_thumbnail.png" 
+alt="Polar Layout Guides" class="thumbnail"/></a>
+</p>
 
 ## What is a Layout Guide?
 
@@ -506,13 +529,16 @@ for segment in 0..<polar.yCount {
 
 It's important to remember that you can have extremely complex designs but they can usually be broken down into simple components that can be represented by layout guides and therefore simple to build. You can check out the full gist [here][gist-animated-train-wheel] where you'll notice that none of the logic for each individual shape exceeds a handful of lines of code.
 
-I hope this guide gives you an idea of the true power of drawing shapes in [PureSwiftUI][pure-swift-ui]. I look forward to seeing what you create.
+I hope this guide gives you an idea of the true power of drawing shapes in [PureSwiftUIDesign][pure-swift-ui-design]. I look forward to seeing what you create.
 
 <!---
  external links:
 --->
 
 [pure-swift-ui]: https://github.com/CodeSlicing/pure-swift-ui
+[pure-swift-ui-design]: https://github.com/CodeSlicing/pure-swift-ui-design
+[layout-guides-playlist]: https://www.youtube.com/playlist?list=PLqSvjK9ENqHTmObQ0mGLpWOFVYlIDbNMY
+
 
 <!---
 gists:

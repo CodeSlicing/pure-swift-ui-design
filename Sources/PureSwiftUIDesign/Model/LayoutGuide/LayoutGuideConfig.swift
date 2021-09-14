@@ -248,27 +248,27 @@ public extension LayoutGuideConfig {
 
 public extension LayoutGuideConfig {
     
-    static func polar(rings: Int, segments: Int, useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuideConfig {
+    static func polar(rings: Int, segments: Int, useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuideConfig {
         LayoutGuideConfig(layoutProvider: { rect in
-            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin)
+            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
         }, layoutPathProvider: polarLayoutPathProvider)
     }
 
-    static func polar(rings: [CGFloat], segments: Int, useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuideConfig {
+    static func polar(rings: [CGFloat], segments: Int, useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuideConfig {
         LayoutGuideConfig(layoutProvider: { rect in
-            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin)
+            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
         }, layoutPathProvider: polarLayoutPathProvider)
     }
 
-    static func polar(rings: Int, segments: [CGFloat], useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuideConfig {
+    static func polar(rings: Int, segments: [CGFloat], useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuideConfig {
         LayoutGuideConfig(layoutProvider: { rect in
-            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin)
+            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
         }, layoutPathProvider: polarLayoutPathProvider)
     }
     
-    static func polar(rings: [CGFloat], segments: [CGFloat], useMaxDimension: Bool = false, origin: UnitPoint = .center) -> LayoutGuideConfig {
+    static func polar(rings: [CGFloat], segments: [CGFloat], useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuideConfig {
         LayoutGuideConfig(layoutProvider: { rect in
-            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin)
+            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
         }, layoutPathProvider: polarLayoutPathProvider)
     }
 }

@@ -1,15 +1,14 @@
 <p align="center">
-<a href="https://github.com/CodeSlicing/pure-swift-ui-design.png">
-<img src="./Assets/Images/pure-swift-ui-design-logo.png" width="200" style="padding-bottom: 20px"/>
+<a href="https://github.com/CodeSlicing/pure-swift-ui-design">
+<img src="./Assets/Images/pure-swift-ui-design-logo-01.png" width="240" style="padding-bottom: 10px"/>
 </a>
 </p>
 
-[PureSwiftUIDesign][pure-swift-ui-design] is a Swift package that brings joy to the world of creating designs using paths in [SwiftUI][swift-ui] code. 
+[PureSwiftUIDesign][pure-swift-ui-design] is a Swift package that brings joy to the process of creating designs using paths in [SwiftUI][swift-ui] code. 
 
 - [Motivation](#motivation)
-- [TL;DR](#tldr)
 - [Layout Guides](#layout-guides)
-- [Path Extensions](#path-extensions)
+- [Extensions](#extensions)
 - [Caveats](#caveats)
 - [Installation](#installation)
 - [Versioning](#versioning)
@@ -19,77 +18,88 @@
 
 ## Motivation
 
-Creating paths in [SwiftUI][swift-ui] can be a bit of a pain. And the more complex the design, the more that pain increases. This is largly due to the creation of points that litter the resulting code not only making it lengthy to write, but next to impossible to decode what's actually going on when you're reading it. 
+Creating paths in [SwiftUI][swift-ui] can be a bit of a pain. This is largely due to the calculation and creation of points that litter the resulting code not only making complex designs lengthy to write, but next to impossible to decode what's actually going on when you're reading it.
 
-[PureSwiftUIDesign][pure-swift-ui-design] is here to help. It allows you to create incredibly complex and even animated designs quickly, while keeping the code simple and easy to understand. 
+[PureSwiftUIDesign][pure-swift-ui-design] allows you to create incredibly complex and even animated designs quickly, while keeping the code simple.
 
 It is my hope that the ease with which you can construct shapes using [PureSwiftUIDesign][pure-swift-ui-design]'s layout guides and `Path` extensions will encourage people to explore their artistic capabilities with constructing paths rather than be turned off by the ubiquitous point calculation logic that appears in most path building example code. Without these hurdles, you really are limited only by you imagination.
 
-## TL;DR
-
-To demonstrate some of the advantages, let's say you want to generate the following label:
-
-<p align="center">
-<img width="250" src="./Assets/Images/modifier-example-label.png" alt="Label with white text and a red background and rounded corners rotated slightly clockwise" title="label designed in SwiftUI"/>
-</p>
-
-The code below shows how you would generate this label, including a small offset, comparing the native `SwiftUI` code to that of [PureSwiftUI][pure-swift-ui].
-
-```swift
-//...
-
-private let width: CGFloat = 200
-private let height: CGFloat = 100
-private let xOffset: CGFloat = 10
-private let yOffset: CGFloat = 10
-private let rotation: CGFloat = 20
-private let scale: CGFloat = 1.1
-private let opacity: Double = 0.9
-
-//...
-
-// native SwiftUI
-
-Text("PureSwiftUI")
-    .font(Font.title.bold())
-    .foregroundColor(.white)
-    .frame(width: width, height: height)
-    .background(Color.red)
-    .clipShape(Capsule())
-    .overlay(Capsule().stroke(Color.black, lineWidth: 4))
-    .rotationEffect(.degrees(rotation))
-    .offset(x: xOffset, y: yOffset)
-    .scaleEffect(scale)
-    .opacity(opacity)
-
-// with PureSwiftUI
-
-TitleText("PureSwiftUI", .white, .bold)
-    .frame(width, height)
-    .clipCapsuleWithStroke(.black, lineWidth: 4, fill: Color.red)
-    .rotate(rotation.degrees)
-    .offset(xOffset, yOffset)
-    .scale(scale)
-    .opacity(opacity)
-```
-
-As you can see the difference is dramatic, favouring design over implementation boiler-plate. 
+There are two main aspects to the package: [layout Guides][docs-layout-guides] and a multitude of extensions all designed to support the act of drawing shapes.
 
 ## Layout Guides
 
-Layout Guides offer a new way to draw shapes in SwiftUI. In short, they completely remove the need to calculate points, thereby avoiding the tortuous and lengthy process of declaring them throughout your path drawing code. 
+[Layout Guides][docs-layout-guides] offer a new way to draw shapes in SwiftUI. In short, they completely remove the need to calculate points, thereby avoiding the tortuous and lengthy process of declaring them throughout your path drawing code. 
 
-XXXX Quick example of usage
+In fact, the original logo for [PureSwiftUIDesign][pure-swift-ui-design] was created using layout guides, including the visibility of the control points in the curves used in the design, the gist of which can be found here: XXXX
 
-## Path Extensions
+For something a bit similar, consider the following code that draws six pointed star:
 
-[PureSwiftUIDesign][pure-swift-ui-design] includes a multitude of extensions to make the process of creating paths a succinct and enjoyable one. 
+```swift
+struct StarShapeNative: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+            let numSegments = 12
+            let outerRadius = min(rect.height, rect.width) / 2
+            let innerRadius = outerRadius * innerRadiusRatio
+            let center = CGPoint(x: rect.midX, y: rect.midY)
+            let stepAngle = 2 * .pi / CGFloat(numSegments)
+            
+            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+            
+            for index in 0..<numSegments {
+                
+                let angle = CGFloat(index) * stepAngle
+                let radius = index.isMultiple(of: 2) ? outerRadius : innerRadius
+                let xOffset = radius * sin(angle)
+                let yOffset = radius * cos(angle)
+                
+                path.addLine(to: CGPoint(x: center.x + xOffset, y: center.y - yOffset))
+            }
+            path.closeSubpath()
+        }
+    }
+}
+```
+Note the verbosity on display in that code, including the usage of trigonometry to calculate the points. The point calculation really gets in the way of understanding what's being created meaning it's difficult to reason about the code. 
 
-XXXX Quick example of usage
+Contrast this with creating the same star using [layout guides][docs-layout-guides]:
 
-## Layout Guides and Paths
+```swift
+private let starLayoutConfig = LayoutGuideConfig.polar(rings: [innerRadiusRatio, 1], segments: 12)
 
-[PureSwiftUI-design][pure-swift-ui-design] includes a multitude of extensions and utilities for making drawing paths a breeze. See the guide on [paths][docs-paths] for a detailed explanation of the various available extensions to facilitate drawing, and the section on [layout guides][docs-layout-guides] which take the process of shape building to the next level.
+struct StarShape: Shape {
+    
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+            let g = starLayoutConfig.layout(in: rect)
+            
+            path.move(g[1, 0]) // move to polar coordinate [1, 0] denoting the ring and segment
+            
+            for segment in 1..<g.yCount {
+                // draw a line to the coordinate of the outer ring if the segment is even, otherwise go to the inner ring
+                path.line(g[segment.isOdd ? 0 : 1, segment])
+            }
+            path.closeSubpath()
+        }
+    }
+}
+```
+The takeaway is that we are declaratively saying *what* we want to do, not *how* to do it. We don't care about the location of the points themselves, we just ask for the point at a particular coordinate and let the framework sort it out. No trignometry is required and therefore we don't have any calculations cluttering up the intent of the code. 
+
+For a detailed explanation of the differences and advantages, please watch this video where I cover creating that star using polar [layout guides][docs-layout-guides]:
+
+<p align="center">
+<a href="https://youtu.be/5gqjr0d62cU" target="_blank"><img src="./Assets/Images/LayoutGuides/layout-guides_part-02_thumbnail.png" 
+alt="Polar Layout Guides" width="300" style="padding: 10px"/></a>
+</p>
+
+There is a whole lot more to [layout guides][docs-layout-guides], including the ability to transform and animate the guides themselves. Anything you can imagine, you can do with ease using these constructs. Read the [documentation][docs-layout-guides] for all the details.
+
+## Extensions
+
+[PureSwiftUIDesign][pure-swift-ui-design] includes a multitude of extensions to make the process of creating paths a succinct and enjoyable one. Once you explore all that this framework has to offer, shape construction becomes more like building something out of lego. 
+
+Read about all the available extensions and utilities [here][docs-extensions].
 
 ## Caveats
 
@@ -147,5 +157,5 @@ version links:
 --->
 
 [docs-layout-guides]: ./Assets/Docs/LayoutGuides/layout-guides.md
-[docs-paths]: ./Assets/Docs/Paths/paths.md
+[docs-extensions]: ./Assets/Docs/Extensions/extensions.md
 [mit-licence]: ./Assets/Docs/LICENCE.md
