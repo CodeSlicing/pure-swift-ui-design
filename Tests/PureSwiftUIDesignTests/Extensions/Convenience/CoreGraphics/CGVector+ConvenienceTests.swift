@@ -94,10 +94,10 @@ extension CGVectorConvenienceExtensionsTests {
 extension CGVectorConvenienceExtensionsTests {
     
     func testClamping() {
-        XCTAssertEqual(vector.clamped(from: 4.1, to: 5.9), CGVector(4.1, 5.9))
-        XCTAssertEqual(vector.clamped(from: 4.1, to: 8), CGVector(4.1, dy))
-        XCTAssertEqual(vector.clamped(from: 2, to: 5.9), CGVector(dx, 5.9))
-        XCTAssertEqual(vector.clamped(from: 2, to: 10), vector)
+        XCTAssertEqual(vector.clamped(min: 4.1, max: 5.9), CGVector(4.1, 5.9))
+        XCTAssertEqual(vector.clamped(min: 4.1, max: 8), CGVector(4.1, dy))
+        XCTAssertEqual(vector.clamped(min: 2, max: 5.9), CGVector(dx, 5.9))
+        XCTAssertEqual(vector.clamped(min: 2, max: 10), vector)
     }
 }
 

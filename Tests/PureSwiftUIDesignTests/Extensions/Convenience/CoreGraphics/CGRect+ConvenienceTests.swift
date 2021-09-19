@@ -122,7 +122,7 @@ extension CGRectConvenienceExtensionsTests {
     
     func testClampedSize() {
         let expectedResult = CGSize(maxX, maxY)
-        let result = CGRect(x, y, 0, 20).clampedSize(from: maxX, to: maxY)
+        let result = CGRect(x, y, 0, 20).clampedSize(min: maxX, max: maxY)
         
         XCTAssertEqual(result, expectedResult)
     }

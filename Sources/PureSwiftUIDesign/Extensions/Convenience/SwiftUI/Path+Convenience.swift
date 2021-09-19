@@ -364,11 +364,6 @@ public extension Path {
         circle(rect.center, diameter: useMaxDimension ? rect.maxDimension : rect.minDimension, transform: transform)
     }
     
-    @available(* , deprecated, message: "use function version that takes a named radius argument")
-    mutating func circle(_ origin: CGPoint, _ radius: CGFloat, transform: CGAffineTransform = .identity) {
-        circle(origin, radius: radius, transform: transform)
-    }
-    
     mutating func circle(_ origin: CGPoint, radius: CGFloat, transform: CGAffineTransform = .identity) {
         circle(origin, diameter: radius * 2, transform: transform)
     }
@@ -384,11 +379,6 @@ public extension Path {
 
     mutating func circle(_ rect: CGRect, useMaxDimension: Bool = false, anchor: UnitPoint, transform: CGAffineTransform = .identity) {
         circle(rect.center, diameter: useMaxDimension ? rect.maxDimension : rect.minDimension, anchor: anchor, transform: transform)
-    }
-
-    @available(* , deprecated, message: "use function version that takes a named radius argument")
-    mutating func circle(_ origin: CGPoint, _ radius: CGFloat, anchor: UnitPoint, transform: CGAffineTransform = .identity) {
-        circle(origin, radius: radius, anchor: anchor, transform: transform)
     }
     
     mutating func circle(_ origin: CGPoint, radius: CGFloat, anchor: UnitPoint, transform: CGAffineTransform = .identity) {

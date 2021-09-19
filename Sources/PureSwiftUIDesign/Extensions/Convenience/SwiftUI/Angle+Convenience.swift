@@ -83,7 +83,7 @@ public extension Angle {
 // MARK: ----- CYCLES (MULTIPLES OF ONE ROTATION)
 
 public extension Angle {
-    
+   
     static func cycles(_ cycles: Double) -> Angle {
         (360.0 * cycles).degrees
     }

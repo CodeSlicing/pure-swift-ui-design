@@ -38,12 +38,6 @@ extension IntConvenienceExtensionsTests {
         XCTAssertEqual(-1, (-1).clampedNegative)
     }
     
-    func testClampedTo() {
-        XCTAssertEqual(1, 3.clamped(to: 1))
-        XCTAssertEqual(0, (-1).clamped(to: 1))
-        XCTAssertEqual(-1, (-1).clamped(to: 1, spanZero: true))
-    }
-    
     func testIsEven() {
         XCTAssertTrue(2.isEven)
         XCTAssertFalse(1.isEven)

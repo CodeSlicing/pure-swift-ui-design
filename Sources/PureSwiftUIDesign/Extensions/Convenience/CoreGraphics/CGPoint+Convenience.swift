@@ -88,8 +88,8 @@ public extension CGPoint {
         y * scale
     }
     
-    func clamped(from: CGFloat, to: CGFloat) -> CGPoint {
-        .init(self.x.clamped(from: from, to: to), self.y.clamped(from: from, to: to))
+    func clamped(min: CGFloat, max: CGFloat) -> CGPoint {
+        .init(self.x.clamped(min: min, max: max), self.y.clamped(min: min, max: max))
     }
 }
 

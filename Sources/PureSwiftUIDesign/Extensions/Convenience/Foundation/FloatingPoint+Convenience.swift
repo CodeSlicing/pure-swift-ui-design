@@ -25,10 +25,6 @@ public extension FloatingPoint {
     var clampedNegative: Self {
         return isPositive ? 0 : self
     }
-    
-    func clamped(to: Self, spanZero: Bool = false) -> Self {
-        self.clamped(from: spanZero ? -to : 0, to: to)
-    }
 }
 
 

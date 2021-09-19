@@ -12,10 +12,6 @@ public extension Int {
     var asString: String {
         String(self)
     }
-    
-    func clamped(to: Int, spanZero: Bool = false) -> Int {
-        self.clamped(from: spanZero ? -to : 0, to: to)
-    }
 
     var isPositive: Bool {
         return self >= 0

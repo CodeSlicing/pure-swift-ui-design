@@ -79,8 +79,8 @@ public extension CGVector {
         dy * scale
     }
 
-    func clamped(from: CGFloat, to: CGFloat) -> CGVector {
-        .init(dx.clamped(from: from, to: to), dy.clamped(from: from, to: to))
+    func clamped(min: CGFloat, max: CGFloat) -> CGVector {
+        .init(dx.clamped(min: min, max: max), dy.clamped(min: min, max: max))
     }
 }
 
