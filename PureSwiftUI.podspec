@@ -22,7 +22,4 @@ This package allows you to create incredibly complex and even animated designs q
     spec.source_files  = "Sources/**/*.{swift}"
     spec.swift_version = "5.1"
     spec.framework  = "SwiftUI"
-
-    end
-
 end
