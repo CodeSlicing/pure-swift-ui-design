@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name         = "PureSwiftUIDesign"
-    spec.version      = "1.0.0-beta-5"
+    spec.version      = "1.0.0-beta-6"
     spec.summary      = "PureSwiftUIDesign is a Swift package designed to enhance the experience of designing views and shapes in SwiftUI."
     spec.description  = <<-DESC
 Creating paths in SwiftUI can be a bit of a pain. This is largely due to the calculation and creation of points that litter the resulting code not only making complex designs lengthy to write, but next to impossible to decode what's actually going on when you're reading it.
