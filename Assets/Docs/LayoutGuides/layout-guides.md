@@ -26,7 +26,7 @@ I've made some videos on layout guides which might be a good place to start if y
 alt="Grid Layout Guides" class="thumbnail"/></a>
 <a href="https://youtu.be/5gqjr0d62cU" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-02_thumbnail.png" 
 alt="Polar Layout Guides" class="thumbnail"/></a>
-z<a href="https://youtu.be/PI-2vyBfpoQ" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-05_thumbnail.png" 
+<a href="https://youtu.be/PI-2vyBfpoQ" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-05_thumbnail.png" 
 alt="Polar Layout Guides" class="thumbnail"/></a>
 <a href="https://youtu.be/LlNw2AXV0BU" target="_blank"><img src="../../../Assets/Images/LayoutGuides/layout-guides_part-06_thumbnail.png" 
 alt="Polar Layout Guides" class="thumbnail"/></a>
@@ -39,7 +39,7 @@ alt="Polar Layout Guides" class="thumbnail"/></a>
 Layout guides are where the rubber really meets the road and will make your life *so* much easier. They essentially convert your drawing canvas into an addressable space in either a grid or a polar coordinate system. Once we have your layout you can simply use coordinates to refer to actual points as you're constructing your path. As always a picture paints a thousand words, so let's build an arrow to point you in the right direction.
 
 <p align="center">
-<img src="arrow-demo.png"  style="padding: 10px" width="250px"/>
+<img src="Images/arrow-demo.png"  style="padding: 10px" width="250px"/>
 </p>
 
 The code to generate this is as follows:
@@ -118,6 +118,8 @@ var layoutSmall = layout.reframed(rect.scaled(0.5, at: rect.center), origin: .ce
 for segment in 0..<numSegments {
     path.move(layoutSmall[0, 0, origin: layout[0, segment]])
     for smallSegment in 0...numSegments {
+        // here I'm going to use a coordinate from the main layout guide as 
+        // the origin point for the smaller layout guide
         path.line(layoutSmall[0, smallSegment, origin: layout[0, segment]])
     }
 }
@@ -127,18 +129,33 @@ for segment in 0..<numSegments {
 Believe it or not, that's all the code you need to generate this result:
 
 <p align="center">
-<img src="./complex-layout-guide-combining-demo.png"  style="padding: 10px" width="250px"/>
+<img src="Images/complex-layout-guide-combining-demo.png"  style="padding: 10px" width="250px"/>
 </p>
 
 I added a layout guide overlay on top of the preview to show how it hangs together.
 
-This is just the tip of the iceberg of what you can achieve with a combination of layout guides and the extensions that [PureSwiftUI][pure-swift-ui] provides. In fact, since so much of the raw calculation is removed, you only have to worry about *what* you want to create, rather than *how* you're going to go about creating it. The star on this shield and the detail therein (not visible on this low-res render) was extremely simple to create; I just used a couple of polar layouts to get the job done:
+This is just the tip of the iceberg of what you can achieve with a combination of layout guides and the extensions that [PureSwiftUIDesign][pure-swift-ui-design] provides. In fact, since so much of the raw calculation is removed, you only have to worry about *what* you want to create, rather than *how* you're going to go about creating it. The star on this shield and the detail therein (not visible on this low-res render) was extremely simple to create; I just used a couple of polar layouts to get the job done:
 
 <p align="center">
-<img src="shield-animation.gif"  style="padding: 10px"/>
+<img src="Animations/shield-animation.gif"  style="padding: 10px"/>
 </p>
 
 You can find the gist [here][gist-shield].
+
+If you prefer, I've done a couple of videos on this that you can watch:
+
+<p align="center" style="padding-top:10px; padding-bottom:10px">
+<style>
+    .thumbnail {
+        width: 150px;
+        padding: 5px;
+    }
+</style>
+<a href="https://youtu.be/Y7Pi5dwe3DQ" target="_blank"><img src="../../../Assets/Images/LayoutGuides/captain-america-shield_part-01_thumbnail.png" 
+alt="Grid Layout Guides" class="thumbnail"/></a>
+<a href="https://youtu.be/Bvo-wLrDDeE" target="_blank"><img src="../../../Assets/Images/LayoutGuides/captain-america-shield_part-02_thumbnail.png" 
+alt="Polar Layout Guides" class="thumbnail"/></a>
+</p>
 
 For segments in a polar layout guide, you can specify not only specific ratios (of revolutions), but also specific angles. The following polar layout guides are equivalent:
 
@@ -211,7 +228,7 @@ struct PolygonExtensionDemo: View {
 And we end up with the following result:
 
 <p align="center">
-<img src="./polygon-sides-demo.png"  style="padding: 10px" width="400px"/>
+<img src="Images/polygon-sides-demo.png"  style="padding: 10px" width="400px"/>
 </p>
 
 So you can imagine that by using and combining layout guides it's a fairly simple process to create even the most complex designs while only focusing on the design and not worrying about how to figure out the locations of the points involved. 
@@ -241,7 +258,7 @@ path.line(rect.topLeading)
 Resulting in the following output:
 
 <p align="center">
-<img src="./notch-demo.png"  style="padding: 10px" width="250px"/>
+<img src="Images/notch-demo.png"  style="padding: 10px" width="250px"/>
 </p>
 
 So while designing you get a good sense of how to construct your curves and, using the layout guide, can adjust the control points appropriately.
@@ -271,7 +288,7 @@ HeartShape()
 Then we use the grid to add the four curves we're going to be needing and in just a few minutes end up with:
 
 <p align="center">
-<img src="heart-drawing-cp-demo.png"  style="padding: 10px" width="250px"/>
+<img src="Images/heart-drawing-cp-demo.png"  style="padding: 10px" width="250px"/>
 </p>
 
 As you can see, as long as you're not using specific spacings in your layout configuration you can refer to points outside the grid - the code for drawing this heart is as simple as this:
@@ -288,7 +305,7 @@ path.curve(grid[0, 3], cp1: grid[3, 7], cp2: grid[0, 5], showControlPoints: show
 Then you fill it with an appropriate color, set `showControlPoints` to `false` (or remove the parameter since it's optional and defaults to false), and either remove the layout guide or set the environment state appropriately, and the result is:
 
 <p align="center">
-<img src="heart-drawing-result.png"  style="padding: 10px" width="250px"/>
+<img src="Images/heart-drawing-result.png"  style="padding: 10px" width="250px"/>
 </p>
 
 Not bad for just a handful of lines of code!
@@ -304,7 +321,7 @@ path.line(point1.to(point2, scale))
 Where scale describes where along the line between `point1` and `point2` you want to be. A Value of 0 would be equivalent to `point1` and a value of 1 is equivalent to `point2`. You can use any other value for your needs, but for animation it makes sense to focus on these two extremes. By driving this value off of `animatableData` you can make your paths animatable in impressive ways with virtually no added complexity. For example, I could animate the previous heart shape to a square and back for the following effect:
 
 <p align="center">
-<img src="heart-animation-demo.gif"  style="padding: 10px" width="450px"/>
+<img src="Animations/heart-animation-demo.gif"  style="padding: 10px" width="450px"/>
 </p>
 
 You can find the gist [here][gist-animated-heart], although it's only 20 lines of code for the drawing section.
@@ -380,7 +397,7 @@ struct AnimatedTriangleDemo: View {
 And the result is: 
 
 <p align="center">
-<img src="triangle-animated-rotation-demo.gif"  style="padding: 10px" width="300px"/>
+<img src="Animations/triangle-animated-rotation-demo.gif"  style="padding: 10px" width="300px"/>
 </p>
 
 We can easily take this further by adding some scaling and translation by modifying the line that creates the layout guide like so:
@@ -395,7 +412,7 @@ var polar = layoutGuideConfig.layout(in: rect)
 To produce the following:
 
 <p align="center">
-<img src="triangle-animated-all-demo.gif"  style="padding: 10px" width="300px"/>
+<img src="Animations/triangle-animated-all-demo.gif"  style="padding: 10px" width="300px"/>
 </p>
 
 Both the rotation and scaling versions allow you to specify an anchor point for the transform so there really is a lot of flexibility in the effect you want to create. It's also worth mentioning that since the transformations are just decorators for other layout guides, there is very little performance penalty involved in utilizing them as much as you like.
@@ -417,7 +434,7 @@ path.ellipse(polar.center, .square(5), anchor: .center)
 And the result shows how these points move during the animation:
 
 <p align="center">
-<img src="triangle-animated-all-properties-demo.gif"  style="padding: 10px" width="300px"/>
+<img src="Animations/triangle-animated-all-properties-demo.gif"  style="padding: 10px" width="300px"/>
 </p>
 
 ## Practical Examples
@@ -425,7 +442,7 @@ And the result shows how these points move during the animation:
 With simple combinations of these transforms and relatively little effort you can create things like this:
 
 <p align="center">
-<img src="rain-icon-demo.gif"  style="padding: 10px" width="120px"/>
+<img src="Animations/rain-icon-demo.gif"  style="padding: 10px" width="120px"/>
 </p>
 
 Where the rain drops are drawn on a grid with a small horizontal offset, the vertical offset is animated, and the whole thing is then rotated:
@@ -442,7 +459,7 @@ The cloud is built on curves where I used [control point visualization](#visuali
 Maybe you want one of those fancy state changing icons when you successfully upload something:
 
 <p align="center">
-<img src="up-to-tick-animation-demo.gif"  style="padding: 10px" width="80px"/>
+<img src="Animations/up-to-tick-animation-demo.gif"  style="padding: 10px" width="80px"/>
 </p>
 
 You can achieve this effect with a combination of animating the rotation of the layout guide itself, and [animating the points](#lets-get-things-moving) within the layout guide to change the arrow into a tick. Gist [here][gist-up-arrow-to-tick-icon].
@@ -454,7 +471,7 @@ Something that might not be obvious from this discussion is that layout guides d
 Here's a more complex example to demonstrate what I mean. Let's say you wanted to construct a train's wheel and a connecting rod for that wheel. In other words, something like this:
 
 <p align="center">
-<img src="train-wheel-demo.gif"  style="padding: 10px" width="300px"/>
+<img src="Animations/train-wheel-demo.gif"  style="padding: 10px" width="300px"/>
 </p>
 
 There's a fair amount going on here, but it is simply constructed using the basic principle of connecting layout guides together and drawing lines between points defined within them. There are about eight different layout guides involved (both grid and polar) describing the various components, and that's fine because layout guides are cheap to create and use. Depending on the complexity of your design, use as many layout guides as you need to make the shape construction as easy as possible.
@@ -464,7 +481,7 @@ Going back to the animation, obviously the most interesting part is the connecti
 There are two layout guides involved for the connecting rod and crank, a grid and a polar layout. The polar layout defines the connecting point on the wheel, and the grid layout defines the connecting rod, and here's the trick: the grid layout guide's size and angle of rotation is based on the position of the point in the polar layout guide defining the crank which is itself rotating. That sounds very complicated so I've overlayed the original animation with a few of the layout guides along with the `Shape` canvas to demonstrate:
 
 <p align="center">
-<img src="train-wheel-demo-with-layout-guides.gif"  style="padding: 10px" width="330px"/>
+<img src="Animations/train-wheel-demo-with-layout-guides.gif"  style="padding: 10px" width="330px"/>
 </p>
 
 So we've got the blue layout guide for the connecting rod, and the green layout guide defining the connecting point. I move the origin point for the blue layout guide so it's outside the main rectangle and then rotate it and size it based on the angle and distance from the origin point to the rotating connecting point on the wheel:
@@ -548,3 +565,4 @@ gists:
 [gist-rain-icon]: https://gist.github.com/CodeSlicing/e61c2d448d6c5e1e5f849e29e26e6f47
 [gist-up-arrow-to-tick-icon]: https://gist.github.com/CodeSlicing/adf9bdf6539fc00b8043b6613030a821
 [gist-animated-train-wheel]: https://gist.github.com/CodeSlicing/7b01216104d10378a47df0eb8723e0cd
+[gist-shield]: https://gist.github.com/CodeSlicing/af02bd37dd60252fd39acaf95d28a7d0

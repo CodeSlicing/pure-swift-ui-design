@@ -66,13 +66,13 @@ path.rect(rect.scaled(0.5, at: rect.center))
 And you get this:
 
 <p align="center">
-<img src="./rect-bottom-right-demo.png"  style="padding: 10px" width="250px"/>
+<img src="Images/rect-bottom-right-demo.png"  style="padding: 10px" width="250px"/>
 </p>
 
 As you can see from the native SwiftUI implementation there's a stark difference in even this simple case. These differences really add up as the complexity of the design increases. Let's up the stakes a little and say we wanted to do the same thing, but center the resulting rectangle, like so:
 
 <p align="center">
-<img src="./rect-center-demo.png"  style="padding: 10px" width="250px"/>
+<img src="Images/rect-center-demo.png"  style="padding: 10px" width="250px"/>
 </p>
 
 In doing this you quickly realise that the intent of the code is more and more obfuscated by the calculations you need to perform as well as the numerous labels:
@@ -93,7 +93,7 @@ In [PureSwiftUIDesign][pure-swift-ui-design] you just say *what* you want to do,
 I'd like to give one more example to really drive this point home, and to do that we're going to create this: 
 
 <p align="center">
-<img src="./three-rect-demo.png"  style="padding: 10px" width="250px"/>
+<img src="Images/three-rect-demo.png"  style="padding: 10px" width="250px"/>
 </p>
 
 In native SwiftUI this is a process that involves various small calculations for origin offsets so let's take a look at the comparison:
@@ -205,7 +205,7 @@ for cycle in stride(from: 0, through: 0.9, by: 0.1) {
 Which gives you:
 
 <p align="center">
-<img src="offset-with-angle-demo.png"  style="padding: 10px" width="250px"/>
+<img src="Images/offset-with-angle-demo.png"  style="padding: 10px" width="250px"/>
 </p>
 
 I cover layout guides and their associated overlays [here][docs-layout-guides].
@@ -272,8 +272,63 @@ vLine(at: rect.leading, length: rect.height, anchor: .center)
 ```
 #### Shapes and Multiple Lines
 
-There is also the capability to not only draw multiple lines at once, but also to add corner radii to where the points of the lines intersect. 
+There is also the capability to not only draw multiple lines at once, but also to add corner radii to where the points of the lines intersect. For example, you could use [layout guides][docs-layout-guides] to capture the points of a star, and then draw the star by passing the points to the extension `shape` on `Path` which allows you to specify the corner radius for each point like so (as you can see I'm keeping the corner radius size agnostic by basing the value on a scaled value of the width of the `CGRect`):
 
+```swift
+
+private struct RoundedStar: Shape {
+    
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+
+            let g = LayoutGuide.polar(rect, rings: [0.4, 1], segments: 10)
+            
+            var points: [CGPoint] = []
+            
+            for segment in 0..<g.yCount {
+              // add each point to the array
+                points.append(g[segment.isEven ? 1 : 0, segment])
+            }
+            
+            // draw shape by passing point array and corner radius
+            path.shape(points, cornerRadius: rect.widthScaled(0.03))
+        }
+    }
+}
+```
+
+The result is as follows: 
+
+<p align="center">
+<img src="Images/shapes-star.png"  width="250px"/>
+</p>
+
+You can also pass an array of tuples of point with a corresponding corner radius so you're not restricted to a single corner radius per shape. For example, the following code:
+
+```swift
+private struct MyShape2: Shape {
+    
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+        
+            path.move(rect.top)
+            
+            path.shape(
+                (rect.top, 10),
+                (rect.bottomLeading, 30),
+                (rect.bottomTrailing, 30)
+            )
+        }
+    }
+}
+```
+Produces the result:
+
+<p align="center">
+<img src="Images/shapes-corner-radius-tuples.png"  width="250px"/>
+</p>
+
+You can also create partial shpaes with the `lines` extension on `Path` which works in a similar way to the `shape` extension but doesn't attempt to close the shape. 
 
 That covers the majority of the API, but I encourage you to check out the source if you want to know more.
 
