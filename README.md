@@ -30,7 +30,7 @@ There are two main aspects to the package: [layout Guides][docs-layout-guides] a
 
 [Layout Guides][docs-layout-guides] offer a new way to draw shapes in SwiftUI. In short, they completely remove the need to calculate points, thereby avoiding the tortuous and lengthy process of declaring them throughout your path drawing code. 
 
-In fact, the original logo for [PureSwiftUIDesign][pure-swift-ui-design] was created using layout guides, including the visibility of the control points in the curves used in the design, the gist of which can be found here: XXXX
+In fact, the original logo for [PureSwiftUIDesign][pure-swift-ui-design] was created using layout guides, including the visibility of the control points in the curves used in the design, the gist of which can be found [here][gist-pure-swift-ui-design-logo].
 
 For something a bit similar, consider the following code that draws six pointed star:
 
@@ -125,7 +125,7 @@ This project is licensed under the MIT License - see [here][mit-licence] for det
 
 ## Contact
 
-You can contact me on Twitter [@CodeSlice][codeslice-twitter]. Happy to hear suggestions for improving the package, or feature requests. I've probably made a few boo boos along the way, so I'm open to course correction. I won't be open-sourcing the project for the moment since I simply don't have time to administer PRs at this point, though I do intend to do so in the future if there's enough interest.
+You can contact me on Twitter [@CodeSlice][codeslice-twitter]. Happy to hear suggestions for improving the package, mistakes I've made, or feature requests. I won't be open-sourcing the project at this time since I don't have time to administer PRs, I'm afraid.
 
 <!---
  external links:
@@ -142,8 +142,7 @@ You can contact me on Twitter [@CodeSlice][codeslice-twitter]. Happy to hear sug
 gists:
 --->
 
-<!--[gist-offset-to-position-demo]: https://gist.github.com/CodeSlicing/2c5376552fa8c27456925370403caa46
--->
+[gist-pure-swift-ui-design-logo]: https://gist.github.com/CodeSlicing/7865ea405cd23f6ef538ddeefaac8da3
 
 <!---
 version links:
