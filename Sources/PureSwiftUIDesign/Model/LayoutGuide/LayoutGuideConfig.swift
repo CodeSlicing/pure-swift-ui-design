@@ -271,6 +271,18 @@ public extension LayoutGuideConfig {
             LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
         }, layoutPathProvider: polarLayoutPathProvider)
     }
+
+    static func polar(rings: Int, segments: [Angle], useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuideConfig {
+        LayoutGuideConfig(layoutProvider: { rect in
+            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
+        }, layoutPathProvider: polarLayoutPathProvider)
+    }
+    
+    static func polar(rings: [CGFloat], segments: [Angle], useMaxDimension: Bool = false, origin: UnitPoint = .center, fromTop: Bool = true) -> LayoutGuideConfig {
+        LayoutGuideConfig(layoutProvider: { rect in
+            LayoutGuide.polar(rect, rings: rings, segments: segments, useMaxDimension: useMaxDimension, origin: origin, fromTop: fromTop)
+        }, layoutPathProvider: polarLayoutPathProvider)
+    }
 }
 
 private func gridLayoutPathProvider(_ gridLayout: LayoutGuide, rect: CGRect) -> Path {

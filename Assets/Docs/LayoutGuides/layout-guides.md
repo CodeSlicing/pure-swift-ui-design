@@ -13,7 +13,7 @@ Ok, brace yourselves because things are about to get a whole lot of awesome.
   - [Practical Examples](#practical-examples)
   - [Putting it all Together](#putting-it-all-together)
 
-I've made some videos on layout guides which might be a good place to start if you'd prefer - playlist for [PureSwiftUIDesign][pure-swift-ui-design] can be found [here][layout-guides-playlist]: 
+I've made some videos on layout guides which might be a good place to start if you'd prefer. The playlist for [PureSwiftUIDesign][pure-swift-ui-design] can be found [here][layout-guides-playlist]: 
 
 <p align="center" style="padding-top:10px; padding-bottom:10px">
 <style>
@@ -45,15 +45,15 @@ Layout guides are where the rubber really meets the road and will make your life
 The code to generate this is as follows:
 
 ```swift
-let gridConfig = LayoutGuideConfig.grid(columns: [0, 0.7], rows: 3)
+private let arrowLayoutConfig = LayoutGuideConfig.grid(columns: [0, 0.7, 1], rows: 3)
 
 struct PathArrowDemo: View {
     var body: some View {
         VStack {
             ArrowShape()
                 .stroke(style: .init(lineWidth: 1, lineJoin: .bevel))
-                .layoutGuide(gridConfig)
-                .frame(150,50)
+                .layoutGuide(arrowLayoutConfig)
+                .frame(150, 50)
         }
     }
 }
@@ -61,17 +61,17 @@ struct PathArrowDemo: View {
 private struct ArrowShape: Shape {
     
     func path(in rect: CGRect) -> Path {
-        var path = Path()
-        var grid = gridConfig.layout(in: rect)
-        path.move(grid[0,1])
-        path.line(grid[1,1])
-        path.vLine(rect.top)
-        path.line(rect.trailing)
-        path.line(grid[1,3])
-        path.line(grid[1,2])
-        path.hLine(rect.leading)
-        path.closeSubpath()
-        return path
+        Path { path in
+            let g = arrowLayoutConfig.layout(in: rect)
+            path.move(g[0, 1])
+            path.line(g[1, 1])
+            path.line(g[1, 0])
+            path.line(g.trailing)
+            path.line(g[1, 3])
+            path.line(g[1, 2])
+            path.line(g[0, 2])
+            path.closeSubpath()
+        }
     }
 }
 ```
@@ -112,15 +112,12 @@ In addition to referring to points within your bespoke coordinate spaces, you ca
 ```swift
 ...
 let numSegments = 5
-var layout = LayoutGuide.polar(rect, rings: [0.75], segments: numSegments)
-var layoutSmall = layout.reframed(rect.scaled(0.5, at: rect.center), origin: .center)
-
+let p = LayoutGuide.polar(rect, rings: [0.75], segments: numSegments)
+let pSmall = p.reframed(rect.scaled(0.5, at: rect.center), origin: .center)
 for segment in 0..<numSegments {
-    path.move(layoutSmall[0, 0, origin: layout[0, segment]])
+    path.move(pSmall[0, 0, origin: p[0, segment]])
     for smallSegment in 0...numSegments {
-        // here I'm going to use a coordinate from the main layout guide as 
-        // the origin point for the smaller layout guide
-        path.line(layoutSmall[0, smallSegment, origin: layout[0, segment]])
+        path.line(pSmall[0, smallSegment, origin: p[0, segment]])
     }
 }
 ...
@@ -160,9 +157,12 @@ alt="Polar Layout Guides" class="thumbnail"/></a>
 For segments in a polar layout guide, you can specify not only specific ratios (of revolutions), but also specific angles. The following polar layout guides are equivalent:
 
 ```swift
-var polar1 = LayoutGuide.polar(rect, rings: 5, segments[0.25, 0.5])
-var polar2 = LayoutGuide.polar(rect, rings: 5, segments[.cycle(0.25), .cycle(0.5)])
-var polar3 = LayoutGuide.polar(rect, rings: 5, segments[.trailing, .bottom])
+let polar1 = LayoutGuide.polar(rect, rings: 5, segments[0.25, 0.5])
+let polar2 = LayoutGuide.polar(rect, rings: 5, segments[.cycles(0.25), .cycles(0.5)])
+// if using the predefined constants in Angle, make sure to set 
+// fromTop to false since the default for layout guides
+// is to measure the segments from the top of the layout. 
+let polar3 = LayoutGuide.polar(rect, rings: 5, segments[.trailing, .bottom], fromTop: false)
 ```
 
 ## Drawing Polygons
@@ -237,21 +237,21 @@ So you can imagine that by using and combining layout guides it's a fairly simpl
 
 ## Visualizing Control Points
 
-One of the more challenging aspects of creating shapes is when you need to deal with control points on a curve. [PureSwiftUI][pure-swift-ui] allows you to see the control points *as you are creating your curve* which takes the guesswork out of the whole endeavor. This works by passing in a boolean to the curve functions. We can build a notch showing control points like this:
+One of the more challenging aspects of creating shapes is when you need to deal with control points on a curve. [PureSwiftUIDesign][pure-swift-ui-design] allows you to see the control points *as you are creating your curve* which takes the guesswork out of the whole endeavor. This works by passing in a boolean to the curve functions. We can build a notch showing control points like this:
 
 ```swift
 ...
-var grid = LayoutGuide.grid(rect, columns: 20, rows: 4)
+let g = LayoutGuide.g(rect, columns: 20, rows: 4)
 
 path.move(rect.topLeading)
-path.line(grid[4, 0])
-path.curve(grid[7, 2], cp1: grid[6,0], cp2: grid[4,2], showControlPoints: true)
-path.line(grid[13, 2])
-path.curve(grid[16, 0], cp1: grid[16,2], cp2: grid[14,0], showControlPoints: true)
-path.line(rect.topTrailing)
-path.line(rect.bottomTrailing)
-path.line(rect.bottomLeading)
-path.line(rect.topLeading)
+path.line(g[4, 0])
+path.curve(g[7, 2], cp1: g[6,0], cp2: g[4,2], showControlPoints: showControlPoints)
+path.line(g[13, 2])
+path.curve(g[16, 0], cp1: g[16,2], cp2: g[14,0], showControlPoints: showControlPoints)
+path.line(g.topTrailing)
+path.line(g.bottomTrailing)
+path.line(g.bottomLeading)
+path.line(g.topLeading)
 ...
 ```
 
@@ -294,12 +294,15 @@ Then we use the grid to add the four curves we're going to be needing and in jus
 As you can see, as long as you're not using specific spacings in your layout configuration you can refer to points outside the grid - the code for drawing this heart is as simple as this:
 
 ```swift
-var grid = gridConfig.layout(in: rect)
-path.move(grid[0, 3])
-path.curve(grid[4, 2], cp1: grid[0, 0], cp2: grid[3, -1], showControlPoints: showControlPoints)
-path.curve(grid[8, 3], cp1: grid[5, -1], cp2: grid[8, 0], showControlPoints: showControlPoints)
-path.curve(rect.bottom, cp1: grid[8, 5], cp2: grid[5, 7], showControlPoints: showControlPoints)
-path.curve(grid[0, 3], cp1: grid[3, 7], cp2: grid[0, 5], showControlPoints: showControlPoints)
+private let heartLayoutConfig = LayoutGuideConfig.grid(columns: 8, rows: 10)
+...
+let g = heartLayoutConfig.layout(in: rect)
+path.move(g[0, 3])
+path.curve(g[4, 2], cp1: g[0, 0], cp2: g[3, -1], showControlPoints: showControlPoints)
+path.curve(g[8, 3], cp1: g[5, -1], cp2: g[8, 0], showControlPoints: showControlPoints)
+path.curve(g.bottom, cp1: g[8, 5], cp2: g[5, 7], showControlPoints: showControlPoints)
+path.curve(g[0, 3], cp1: g[3, 7], cp2: g[0, 5], showControlPoints: showControlPoints)
+path.closeSubpath()
 ```
 
 Then you fill it with an appropriate color, set `showControlPoints` to `false` (or remove the parameter since it's optional and defaults to false), and either remove the layout guide or set the environment state appropriately, and the result is:
@@ -330,27 +333,25 @@ You can find the gist [here][gist-animated-heart], although it's only 20 lines o
 
 Ok, so it's really easy to draw things, and to animate the points within things, but what if you wanted to transform the layout guides themselves to expand your artistic abilities even further. No problem! The ability to scale, rotate and offset layout guides is built right in, and animatable too! Let's take a look at how that's done.
 
-Let's start by animating everybody's favorite shape: a triangle. This is remarkably simple to do [PureSwiftUI][pure-swift-ui]. On top of the fact that drawing a triangle is so simple because you don't need to calculate any points in the code, once you have constructed your triangle you can simply animate the layout grid upon which it was constructed. Since the points that make up the triangle are based on the layout guide, when you transform the guide itself the points are transformed along with it. Therefore When you animate that transformation, the triangle is animated as a whole with no complicated transformational logic required. you simply declare what do you want to happen, and it happens.
+Let's start by animating everybody's favorite shape: a triangle. This is remarkably simple to do [PureSwiftUIDesign][pure-swift-ui-design]. On top of the fact that drawing a triangle is so simple because you don't need to calculate any points in the code, once you have constructed your triangle you can simply animate the layout grid upon which it was constructed. Since the points that make up the triangle are based on the layout guide, when you transform the guide itself the points are transformed along with it. Therefore When you animate that transformation, the triangle is animated as a whole with no complicated transformational logic required. you simply declare what do you want to happen, and it happens.
 
 Let's start out by defining a polar layout guide, with two rings and three segments.
 
 ```swift
-let layoutGuideConfig = LayoutGuideConfig.polar(rings: 1, segments: 3)
+private let triangleLayoutConfig = LayoutGuideConfig.polar(rings: 1, segments: 3)
 ```
 
 We can then use this layout guide to construct a triangle like so:
 
 ```swift
-func path(in rect: CGRect) -> Path {
-    var path = Path()
-    var polar = layoutGuideConfig.layout(in: rect)
-    path.move(polar[1, 0])
-    for segment in 1..<polar.yCount {
-        path.line(polar[1, segment])
-    }
-    path.closeSubpath()
-    return path
+...
+let p = triangleLayoutConfig.layout(in: rect)
+path.move(p[1, 0])
+for segment in 1..<p.yCount {
+    path.line(p[segment.isOdd ? 0 : 1, segment])
 }
+path.closeSubpath()
+...
 ```
 
 Using the same logic as we did in the [example](#drawing-polygons) above, this would obviously work for any polygon, or indeed any shape at all based on the layout guide in question. So now we have our triangle, let's animate it. We're going to start by rotating it based on some `animatableData` called `factor` in our Shape view by modifying the Shape that uses the layout guide like this:
@@ -403,7 +404,7 @@ And the result is:
 We can easily take this further by adding some scaling and translation by modifying the line that creates the layout guide like so:
 
 ```swift
-var polar = layoutGuideConfig.layout(in: rect)
+let p = layoutGuideConfig.layout(in: rect)
     .scaled(0.1, factor: factor)
     .yOffset(from: 0, to: rect.heightScaled(-0.45), factor: factor)
     .rotated(360.degrees, factor: factor)
@@ -448,7 +449,7 @@ With simple combinations of these transforms and relatively little effort you ca
 Where the rain drops are drawn on a grid with a small horizontal offset, the vertical offset is animated, and the whole thing is then rotated:
 
 ```swift
-var grid = rainLayoutConfig.layout(in: rect)
+var g = rainLayoutConfig.layout(in: rect)
     .offset(.point(-5, -rect.halfHeight))
     .offset(.y(rect.halfHeight), factor: factor)
     .rotated(-20.degrees)
@@ -495,7 +496,7 @@ private let wheelCrankLayoutConfig = LayoutGuideConfig.polar(rings: [0.4], segme
 // in connecting rod shape:
 
 // polar layout that defines only one coordinate: the connecting point.
-var polar = wheelCrankLayoutConfig.layout(in: rect)
+let polar = wheelCrankLayoutConfig.layout(in: rect)
     // rotate it by a factor defining the animation
     .rotated(360.degrees, factor: factor)
 
@@ -552,7 +553,6 @@ I hope this guide gives you an idea of the true power of drawing shapes in [Pure
  external links:
 --->
 
-[pure-swift-ui]: https://github.com/CodeSlicing/pure-swift-ui
 [pure-swift-ui-design]: https://github.com/CodeSlicing/pure-swift-ui-design
 [layout-guides-playlist]: https://www.youtube.com/playlist?list=PLqSvjK9ENqHTmObQ0mGLpWOFVYlIDbNMY
 

@@ -1,6 +1,6 @@
 # The Path to Success
 
-Natively, working with paths is a time-consuming task that cannot be referred to as fun. [PureSwiftUI][pure-swift-ui] aims to turn that on its head by providing a huge number of extensions and utilities that make even the most intricate path-drawing tasks a joy.
+Natively, working with paths is a time-consuming task that cannot be referred to as fun. [PureSwiftUIDesign][pure-swift-ui-design] aims to turn that on its head by providing a huge number of extensions and utilities that make even the most intricate path-drawing tasks a joy.
 
   - [Type Extensions](#type-extensions)
     - [Angle](#angle)
@@ -21,7 +21,7 @@ Allow me to headline a few of the most useful extensions to give you an idea of 
 
 ### Angle
 
-Taking a cue from the `UnitPoint` struct, `Angle` now has constants represented by `.top`, `.leading`, `.bottomTrailing` etc pointing in the directions you would expect. It's important to note that throughout [PureSwiftUI][pure-swift-ui] clockwise means *clockwise* so you don't have to do any weird visualizations in your head. Even though this is a break from the standard `CoreGraphics` library, I believe the increase in clarity more than justifies this break from absolute consistency.
+Taking a cue from the `UnitPoint` struct, `Angle` now has constants represented by `.top`, `.leading`, `.bottomTrailing` etc pointing in the directions you would expect. It's important to note that throughout [PureSwiftUIDesign][pure-swift-ui-design] clockwise means *clockwise* so you don't have to do any weird visualizations in your head. Even though this is a break from the standard `CoreGraphics` library, I believe the increase in clarity more than justifies this break from absolute consistency.
 
 In addition to the directional constants, you can now specify a fraction of a rotation by using the `.cycle(fraction)` function which returns an `Angle` representing the multiple of a single rotation: 
 
@@ -229,7 +229,7 @@ So for `CGPoint`, `CGVector`, and `CGSize` you can use static initializers that 
 
 ### Path
 
-Holding it all together is [Path][Path] of course, and [PureSwiftUI][pure-swift-ui] provides a plethora of extensions to reduce friction between design and code all working hand in glove with the associated extensions for the CG structs previously mentioned. It's beneficial at this point to talk about the general approach to the API so you don't have to rely on knowing them all in order to reap the benefits:
+Holding it all together is [Path][Path] of course, and [PureSwiftUIDesign][pure-swift-ui-design] provides a plethora of extensions to reduce friction between design and code all working hand in glove with the associated extensions for the CG structs previously mentioned. It's beneficial at this point to talk about the general approach to the API so you don't have to rely on knowing them all in order to reap the benefits:
 
 #### Building Blocks
 
@@ -336,7 +336,6 @@ That covers the majority of the API, but I encourage you to check out the source
  external links:
 --->
 
-[pure-swift-ui]: https://github.com/CodeSlicing/pure-swift-ui
 [pure-swift-ui-design]: https://github.com/CodeSlicing/pure-swift-ui-design
 [CGSize]: https://github.com/CodeSlicing/pure-swift-ui-design/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGSize%2BConvenience.swift
 [CGPoint]: https://github.com/CodeSlicing/pure-swift-ui-design/blob/develop/Sources/PureSwiftUI/Extensions/Convenience/CoreGraphics/CGPoint%2BConvenience.swift

@@ -354,7 +354,52 @@ extension PolarLayoutGuideTests {
     }
 }
 
+// MARK: ----- EQUIDISTANT RING SPECIFIC ANGLE POINT TESTS
 
+extension PolarLayoutGuideTests {
+    
+    func testPointsForEquidistantRingSpecificAngleSegment() {
+        let polar = LayoutGuide.polar(rect, rings: 6, segments: [.cycles(0), .cycles(0.25), .cycles(0.5)])
+        assertEqual(polar[0, 0], rect.center)
+        assertEqual(polar[6, 1], rect.center.xOffset(rect.halfHeight))
+        assertEqual(polar[6, 2], rect.bottom)
+        assertEqual(polar[0, 2], rect.center)
+        assertEqual(polar[3, 2], rect.center.yOffset(rect.heightScaled(0.25)))
+    }
+    
+    func testConfigPointsForEquidistantRingSpecificAngleSegment() {
+        let polar = LayoutGuide.polar(rect, rings: 6, segments: [.cycles(0), .cycles(0.25), .cycles(0.5)])
+        let polarFromConfig = LayoutGuideConfig.polar(rings: 6, segments: [.cycles(0), .cycles(0.25), .cycles(0.5)]).layout(in: rect)
+        assertEqual(polar[0, 0], polarFromConfig[0, 0])
+        assertEqual(polar[6, 1], polarFromConfig[6, 1])
+        assertEqual(polar[6, 2], polarFromConfig[6, 2])
+        assertEqual(polar[0, 2], polarFromConfig[0, 2])
+        assertEqual(polar[3, 2], polarFromConfig[3, 2])
+    }
+}
+
+ // MARK: ----- RELATIVE RING SPECIFIC ANGLE POINT TESTS
+
+ extension PolarLayoutGuideTests {
+     
+    func testPointsForRelativeRingSpecificAngleSegment() {
+        let polar = LayoutGuide.polar(rect, rings: [0, 0.5, 1], segments: [.cycles(0), .cycles(0.25), .cycles(0.5)])
+        assertEqual(polar[0, 0], rect.center)
+        assertEqual(polar[2, 1], rect.center.xOffset(rect.halfHeight))
+        assertEqual(polar[2, 2], rect.bottom)
+        assertEqual(polar[0, 2], rect.center)
+    }
+     
+    func testConfigPointsForRelativeRingSpecificAngleSegment() {
+        let polar = LayoutGuide.polar(rect, rings: [0, 0.5, 1], segments: [.cycles(0), .cycles(0.25), .cycles(0.5)])
+        let polarFromConfig = LayoutGuideConfig.polar(rings: [0, 0.5, 1], segments: [.cycles(0), .cycles(0.25), .cycles(0.5)]).layout(in: rect)
+        assertEqual(polar[0, 0], polarFromConfig[0, 0])
+        assertEqual(polar[2, 1], polarFromConfig[2, 1])
+        assertEqual(polar[2, 2], polarFromConfig[2, 2])
+        assertEqual(polar[0, 2], polarFromConfig[0, 2])
+    }
+}
+                                                                  
 // MARK: -----  RELATIVE RING EQUIDISTANT SEGMENT POINT TESTS
 
 extension PolarLayoutGuideTests {
