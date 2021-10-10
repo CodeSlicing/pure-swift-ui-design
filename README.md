@@ -103,6 +103,19 @@ Read about all the available extensions and utilities [here][docs-extensions].
 
 ## Caveats
 
+[PureSwiftUIDesign][pure-swift-ui-design] defines angles as starting from the trailing edge (as per native SwiftUI) and increasing in a clockwise direction. [Layout guides][docs-layout-guides] on the other hand, specifically of type polar, define the starting angle, by default, at the top. This makes sense for polar design work since if there is a reflective symmetry to the design, it is more likely to be on the vertical axis. Also, designs are easier to reason about if the angle starts from the top. You can override this behaviour by setting `fromTop` to `false` like so:
+
+```swift
+let layoutConfig = LayoutGuideConfig.polar(rings: 2, segments: 8, fromTop: false)
+```
+
+Be warned, however. The predefined constants in `Angle` such as `leading` and `trailing` are defined as per the native SwiftUI way of doing things. So if you want to specify angles like this: 
+
+```swift
+let layoutConfig = LayoutGuideConfig.polar(rings: 2, segments: [.trailing, .bottom, .leading], fromTop: false)
+```
+you *must* remember to set `fromTop` to `false` or the resulting angles will be offset 90 degrees anti-clockwise. 
+
 ## Installation
 
 The `pure-swift-ui-design` package can be found at:
@@ -131,7 +144,6 @@ You can contact me on Twitter [@CodeSlice][codeslice-twitter]. Happy to hear sug
  external links:
 --->
 
-[pure-swift-ui]: https://github.com/CodeSlicing/pure-swift-ui
 [pure-swift-ui-design]: https://github.com/CodeSlicing/pure-swift-ui-design
 [codeslice-twitter]: https://twitter.com/CodeSlice
 [swift-ui]: https://developer.apple.com/xcode/swiftui/
